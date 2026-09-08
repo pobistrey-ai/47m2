@@ -23,7 +23,6 @@
     "@fontsource/montserrat": "^5.2.8",
     "@iconify-json/lucide": "^1.2.26",
     "@shikijs/rehype": "^3.4.0",
-    "@tailwindcss/vite": "^4.0.7",
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
     "astro": "6.0.2",
@@ -37,15 +36,17 @@
     "rehype-expressive-code": "^0.40.2",
     "rehype-external-links": "^3.0.0",
     "tailwind-merge": "^3.3.0",
-    "tailwindcss": "^4.1.7",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@astrojs/tailwind": "^6.0.2",
+    "autoprefixer": "^10.5.5",
+    "postcss": "^8.5.28",
     "prettier": "^3.5.1",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-astro-organize-imports": "^0.4.11",
-    "prettier-plugin-tailwindcss": "^0.6.11"
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "tailwindcss": "^3.4.19"
   },
   "prettier": {
     "semi": false,
