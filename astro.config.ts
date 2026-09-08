@@ -11,6 +11,7 @@ export default defineConfig({
   site: 'https://47m2.ru',
   integrations: [react(), sitemap(), icon(), mdx()],
   vite: {
+    // @ts-ignore Игнорируем конфликт типов плагина tailwindcss
     plugins: [tailwindcss()],
   },
   server: {
