@@ -1,0 +1,455 @@
+---
+import Breadcrumbs from '@/components/breadcrumbs.astro'
+import { Button } from '@/components/ui/button'
+import Layout from '@/layouts/layout.astro'
+import { getAllPosts } from '@/lib/data-utils'
+import { formatDate } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
+import { render } from 'astro:content'
+import Link from '@/components/link.astro'
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts()
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: post,
+  }))
+}
+
+const post = Astro.props
+const { Content, headings } = await render(post)
+const formattedDate = formatDate(post.data.date)
+
+const allPosts = await getAllPosts()
+const currentIndex = allPosts.findIndex((p) => p.id === post.id)
+const prevPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null
+const nextPost =
+  currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null
+
+const tocHeadings = (headings || []).filter(
+  (h) => h.depth === 2 || h.depth === 3,
+)
+---
+
+<Layout
+  class="max-w-3xl"
+  title={post.data.title}
+  description={post.data.description}
+>
+  <div class="post-page-wrapper">
+    <!-- Десктопный сайдбар (Оглавление) -->
+    <aside class="post-toc-sidebar" aria-label="Оглавление статьи">
+      {
+        tocHeadings.length > 0 && (
+          <nav class="toc-nav">
+            <h2 class="toc-title">Содержание</h2>
+            <ul class="toc-list">
+              {tocHeadings.map((heading) => (
+                <li class={`toc-item depth-${heading.depth}`}>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+    </aside>
+
+    <!-- Основной контент -->
+    <div class="post-content">
+      <!-- Хлебные крошки -->
+      <div class="post-breadcrumbs">
+        <Breadcrumbs
+          items={[
+            { href: '/blog', label: 'Статьи', icon: 'lucide:library-big' },
+            {
+              href: `/blog/${post.id}`,
+              label: post.data.title,
+              icon: 'lucide:file-text',
+            },
+          ]}
+        />
+      </div>
+
+      <!-- Мобильное оглавление -->
+      {
+        tocHeadings.length > 0 && (
+          <nav class="toc-mobile" aria-label="Содержание">
+            <ul class="toc-list">
+              {tocHeadings.map((heading) => (
+                <li class={`toc-item depth-${heading.depth}`}>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+
+      <!-- Шапка статьи -->
+      <header class="post-header">
+        <h1 class="post-title" id="post-title">
+          {post.data.title}
+        </h1>
+        <div class="post-meta">
+          <span>{formattedDate}</span>
+        </div>
+      </header>
+
+      <article class="post-body">
+        <Content />
+      </article>
+
+      <!-- Навигация между статьями -->
+      {
+        (prevPost || nextPost) && (
+          <nav class="post-pagination" aria-label="Навигация по статьям">
+            {prevPost && (
+              <Link href={`/blog/${prevPost.id}`} class="pagination-link prev">
+                <Icon name="lucide:arrow-left" class="pagination-icon" />
+                <span>Раньше</span>
+              </Link>
+            )}
+
+            {nextPost && (
+              <Link href={`/blog/${nextPost.id}`} class="pagination-link next">
+                <span>Позже</span>
+                <Icon name="lucide:arrow-right" class="pagination-icon" />
+              </Link>
+            )}
+          </nav>
+        )
+      }
+    </div>
+  </div>
+
+  <!-- Кнопка "Наверх" -->
+  <Button
+    variant="outline"
+    size="icon"
+    className="scroll-to-top"
+    id="scroll-to-top"
+    title="Наверх"
+    aria-label="Наверх"
+  >
+    <Icon name="lucide:arrow-up" class="scroll-to-top-icon" />
+  </Button>
+</Layout>
+
+<style>
+  /* =========================================
+     1. СЕТКА И ЛЕЙАУТ
+     ========================================= */
+  .post-page-wrapper {
+    display: grid;
+    grid-template-columns:
+      minmax(0, 1fr)
+      min(calc(var(--breakpoint-md, 768px) - 2rem), 100%)
+      minmax(0, 1fr);
+    row-gap: 1.5rem;
+    padding: 0 1rem;
+    width: 100%;
+  }
+
+  .post-content {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* =========================================
+     2. ОГЛАВЛЕНИЕ (TOC)
+     ========================================= */
+  /* Базовое состояние: мобильная версия видна, десктопная скрыта */
+  .post-toc-sidebar {
+    display: none;
+    grid-column: 1;
+    justify-self: end;
+    width: 240px;
+    margin-right: 2rem;
+    align-self: start;
+    position: sticky;
+    top: 5rem;
+    max-height: calc(100vh - 7rem);
+    overflow-y: auto;
+  }
+
+  .toc-mobile {
+    display: block;
+    margin: 0.5rem 0 1.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-muted, #f9fafb);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 0.5rem;
+  }
+
+  /* Переключение только в одну сторону (на десктоп) */
+  @media (min-width: 1100px) {
+    .post-toc-sidebar {
+      display: block;
+    }
+    .toc-mobile {
+      display: none;
+    }
+  }
+
+  /* Общие стили для обоих вариантов TOC */
+  .toc-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted-foreground, #6b7280);
+  }
+
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .toc-item a {
+    display: block;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--text-foreground, #374151);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    border-radius: 0.25rem 0.25rem 0.25rem 0.25rem;
+    transition: all 0.15s ease;
+  }
+
+  .toc-item a:hover {
+    color: var(--white-warm);
+    background: var(--card-hover);
+  }
+
+  .toc-item.depth-3 a {
+    padding-left: 1.25rem;
+    font-size: 0.75rem;
+  }
+
+  .toc-item a.active {
+    border-left-color: var(#2563eb);
+    color: var(#2563eb);
+    font-weight: 500;
+    background: color-mix(in oklch, 0.55 0.05 75 8%, transparent);
+  }
+
+  /* =========================================
+     3. ЭЛЕМЕНТЫ СТАТЬИ
+     ========================================= */
+  .post-breadcrumbs {
+    width: 100%;
+    margin-bottom: 1rem; /* Добавил небольшой отступ для красоты */
+  }
+
+  /* Примечание: .post-image оставлен, предполагаю, что он рендерится внутри <Content /> */
+  .post-image {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .post-title {
+    margin-bottom: 0.5rem;
+    scroll-margin-top: 6rem;
+    font-size: 1.875rem;
+    line-height: 1.25;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  @media (min-width: 640px) {
+    .post-title {
+      font-size: 2.25rem;
+    }
+  }
+
+  .post-meta {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: color-mix(in oklch, var(--foreground) 60%, transparent);
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--divide-border, #e5e7eb);
+    padding-bottom: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .post-meta {
+      flex-direction: row;
+      flex-wrap: wrap;
+      border-bottom: none;
+      padding-bottom: 0;
+      font-size: 0.875rem;
+    }
+  }
+
+  /* =========================================
+     5. НАВИГАЦИЯ МЕЖДУ СТАТЬЯМИ
+     ========================================= */
+  .post-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .pagination-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.375rem;
+    color: var(--foreground);
+    text-decoration: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    font-size: 0.875rem;
+    font-weight: 500;
+    max-width: 45%;
+    transition:
+      background-color 1.2s ease,
+      color 1.2s ease,
+      border-color 1.2s ease;
+  }
+
+  .pagination-link:hover {
+    border-color: color-mix(in oklch, var(--white-warm) 40%, transparent);
+    color: var(--white-warm);
+    background-color: color-mix(in oklch, var(--white-warm) 8%, transparent);
+    transition:
+      border-color 1.2s ease,
+      color 1.2s ease,
+      background-color 1.2s ease;
+  }
+
+  .pagination-link.next {
+    margin-left: auto;
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .pagination-icon {
+    width: 2rem;
+    height: 2rem;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @media (max-width: 640px) {
+    .post-pagination {
+      gap: 0.75rem;
+    }
+    .pagination-link,
+    .pagination-link.next {
+      max-width: 100%;
+      width: 100%;
+      justify-content: center;
+      margin-left: 0;
+      text-align: center; /* Добавлено для центровки текста на мобильных */
+    }
+  }
+
+  /* =========================================
+     6. УТИЛИТЫ И КНОПКА "НАВЕРХ"
+     ========================================= */
+  .hidden {
+    display: none !important;
+  }
+
+  .scroll-to-top {
+    position: fixed;
+    right: 2rem;
+    bottom: 3.2rem;
+    z-index: 50;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    background-color: transparent;
+    border: 1px solid;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .scroll-to-top-icon {
+    width: 2rem;
+    height: 2rem;
+    transition: border-color 1.2s ease;
+  }
+
+  .scroll-to-top:not(.hidden) {
+    display: flex;
+  }
+
+  .scroll-to-top:hover {
+    border-color: color-mix(in oklch, var(--white-warm) 90%, transparent);
+    color: var(--white-warm);
+    /* background-color: color-mix(in oklch, var(--white-warm) 8%, transparent); */
+    cursor: pointer;
+  }
+  .scroll-to-top:active {
+    background-color: var(--white-warm);
+    transform: scale(0.92) translateY(1px);
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', initPageScripts)
+  document.addEventListener('astro:after-swap', initPageScripts)
+
+  function initPageScripts() {
+    initScrollToTop()
+    initTocHighlight()
+  }
+
+  function initScrollToTop() {
+    const btn = document.getElementById('scroll-to-top')
+    if (!btn) return
+
+    const onScroll = () => btn.classList.toggle('hidden', window.scrollY <= 300)
+    btn.addEventListener('click', (e) => {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    })
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+  }
+
+  function initTocHighlight() {
+    const tocLinks = document.querySelectorAll('.toc-nav a, .toc-mobile a')
+    const headings = document.querySelectorAll('.post-body h2, .post-body h3')
+    if (tocLinks.length === 0 || headings.length === 0) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            tocLinks.forEach((link) => link.classList.remove('active'))
+            const id = entry.target.id
+            const activeLink = document.querySelector(
+              `.toc-nav a[href="#${id}"], .toc-mobile a[href="#${id}"]`,
+            )
+            if (activeLink) activeLink.classList.add('active')
+          }
+        })
+      },
+      { rootMargin: '-10% 0px -65% 0px' },
+    )
+
+    headings.forEach((h) => observer.observe(h))
+  }
+</script>

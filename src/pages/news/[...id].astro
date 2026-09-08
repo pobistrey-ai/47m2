@@ -1,0 +1,222 @@
+---
+import Breadcrumbs from '@/components/breadcrumbs.astro'
+import { Button } from '@/components/ui/button'
+import Layout from '@/layouts/layout.astro'
+import { getAllNews } from '@/lib/data-utils'
+import { formatDate } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
+import { Image } from 'astro:assets'
+import { render } from 'astro:content'
+
+export async function getStaticPaths() {
+  const news = await getAllNews()
+  return news.map((item) => ({
+    params: { id: item.id },
+    props: item,
+  }))
+}
+
+const news = Astro.props
+const { Content } = await render(news)
+const formattedDate = formatDate(news.data.date)
+---
+
+<Layout
+  class="max-w-3xl"
+  title={news.data.title}
+  description={news.data.description}
+>
+  <div class="post-page-wrapper">
+    <div class="post-content">
+      <!-- 1. Хлебные крошки -->
+      <div class="post-breadcrumbs">
+        <Breadcrumbs
+          items={[
+            { href: '/news', label: 'Новости', icon: 'lucide:newspaper' },
+            {
+              href: `/news/${news.id}`,
+              label: news.data.title,
+              icon: 'lucide:file-text',
+            },
+          ]}
+        />
+      </div>
+
+      <!-- 2. Картинка новости (если она есть) -->
+      {
+        news.data.image && (
+          <Image
+            src={news.data.image}
+            alt={news.data.title}
+            width={1200}
+            height={630}
+            class="post-image"
+          />
+        )
+      }
+
+      <!-- 3. Заголовок и дата (точно как в статье) -->
+      <header class="post-header">
+        <h1 class="post-title" id="post-title">
+          {news.data.title}
+        </h1>
+        <div class="post-meta">
+          <span>{formattedDate}</span>
+        </div>
+      </header>
+
+      <!-- 4. Сам текст (точно как в статье) -->
+      <article class="post-body">
+        <Content />
+      </article>
+    </div>
+  </div>
+
+  <!-- 5. Кнопка "Наверх" (точно как в статье) -->
+  <Button
+    variant="outline"
+    size="icon"
+    className="scroll-to-top"
+    id="scroll-to-top"
+    title="Наверх"
+    aria-label="Наверх"
+  >
+    <Icon name="lucide:arrow-up" class="scroll-to-top-icon" />
+  </Button>
+
+  <script>
+    document.addEventListener('astro:page-load', initPageScripts)
+    document.addEventListener('astro:after-swap', initPageScripts)
+
+    function initPageScripts() {
+      initScrollToTop()
+    }
+
+    function initScrollToTop() {
+      const btn = document.getElementById('scroll-to-top')
+      if (!btn) return
+
+      const onScroll = () =>
+        btn.classList.toggle('hidden', window.scrollY <= 300)
+      btn.addEventListener('click', (e) => {
+        e.preventDefault()
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      })
+      window.addEventListener('scroll', onScroll, { passive: true })
+      onScroll()
+    }
+  </script>
+</Layout>
+
+<style>
+  /* =========================================
+     1. СЕТКА И ЛЕЙАУТ
+     ========================================= */
+  .post-page-wrapper {
+    display: grid;
+    grid-template-columns:
+      minmax(0, 1fr)
+      min(calc(var(--breakpoint-md, 768px) - 2rem), 100%)
+      minmax(0, 1fr);
+    row-gap: 1.5rem;
+    padding: 0 1rem;
+    width: 100%;
+  }
+
+  .post-content {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* =========================================
+     2. ЭЛЕМЕНТЫ ШАПКИ НОВОСТИ
+     ========================================= */
+  .post-breadcrumbs {
+    width: 100%;
+    margin-bottom: 1rem; /* Небольшой воздух после крошек */
+  }
+
+  .post-image {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem; /* Отступ до заголовка */
+  }
+
+  .post-title {
+    margin-bottom: 0.5rem;
+    scroll-margin-top: 6rem;
+    font-size: 1.875rem;
+    line-height: 1.25;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  @media (min-width: 640px) {
+    .post-title {
+      font-size: 2.25rem;
+    }
+  }
+
+  .post-meta {
+    margin-bottom: 1.5rem; /* Чуть больше воздуха до текста */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: color-mix(in oklch, var(--foreground) 60%, transparent);
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--divide-border, #e5e7eb);
+    padding-bottom: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .post-meta {
+      flex-direction: row;
+      flex-wrap: wrap;
+      border-bottom: none;
+      padding-bottom: 0;
+      font-size: 0.875rem;
+    }
+  }
+
+  /* =========================================
+     4. УТИЛИТЫ И КНОПКА "НАВЕРХ"
+     ========================================= */
+  .hidden {
+    display: none !important;
+  }
+
+  .scroll-to-top {
+    position: fixed;
+    right: 2rem;
+    bottom: 2rem;
+    z-index: 50;
+    display: none;
+    background-color: transparent;
+
+    border: 1px solid transparent;
+  }
+
+  .scroll-to-top:not(.hidden) {
+    display: flex;
+  }
+
+  .scroll-to-top-icon {
+    width: 1rem;
+    height: 1rem;
+    transition: border-color 1.2s ease;
+  }
+
+  .scroll-to-top:hover {
+    border-color: color-mix(in oklch, var(--white-warm) 40%, transparent);
+    color: var(--white-warm);
+    background-color: color-mix(in oklch, var(--white-warm) 8%, transparent);
+    transition:
+      border-color 1.2s ease,
+      color 1.2s ease,
+      background-color 1.2s ease;
+    cursor: pointer;
+  }
+</style>

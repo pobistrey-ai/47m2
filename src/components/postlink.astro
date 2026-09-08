@@ -1,0 +1,50 @@
+---
+export interface Props {
+  href: string
+  target?: '_blank' | '_self' | '_parent' | '_top'
+  rel?: string
+  title?: string
+}
+
+const {
+  href,
+  target = '_blank',
+  rel = 'noopener noreferrer',
+  title,
+} = Astro.props
+const children = Astro.slots.render('default')
+---
+
+<a {href} {target} {rel} {title} class="post-link">
+  {children}
+</a>
+
+<style>
+  .post-link {
+    text-decoration: none;
+    position: relative;
+    color: var(--primary);
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .post-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: width 0.3s ease;
+  }
+
+  .post-link:hover {
+    color: var(--white-warm);
+  }
+
+  .post-link:hover::after {
+    width: 100%;
+    background: var(--white-warm);
+  }
+</style>

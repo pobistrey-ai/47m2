@@ -1,0 +1,53 @@
+/* ==========================================
+   БАЗОВАЯ ЗАЩИТА ДЛЯ ВСЕХ КАРТИНОК В СТАТЬЕ
+   ========================================== */
+.post-body img {
+  max-width: 100%;
+  height: auto !important; /* Запрещает обрезку и сплющивание */
+  display: block;
+  border-radius: 8px;
+}
+
+/* ==========================================
+   ОБТЕКАНИЕ ТЕКСТОМ (Десктоп)
+   ========================================== */
+.img-float-left {
+  float: left;
+  margin: 0 1.5rem 1rem 0;
+  max-width: 40%;
+}
+
+.img-float-right {
+  float: right;
+  margin: 0 0 1rem 1.5rem;
+  max-width: 40%;
+}
+
+/* Обертка для кликабельной картинки (ссылки) */
+.img-link-wrapper {
+  display: block;
+  text-decoration: none;
+  float: left; /* Можно менять на right или убрать для центрирования */
+  margin: 0 1.5rem 1rem 0;
+  max-width: 40%;
+}
+
+.img-link-wrapper:hover img {
+  opacity: 0.9;
+  transition: all 0.2s ease;
+}
+
+/* ==========================================
+   МОБИЛЬНАЯ ВЕРСИЯ (Отключаем обтекание)
+   ========================================== */
+@media (max-width: 768px) {
+  .img-float-left,
+  .img-float-right,
+  .img-link-wrapper {
+    float: none;
+    max-width: 100%;
+    margin: 1.5rem auto;
+    display: flex;
+    justify-content: center;
+  }
+}

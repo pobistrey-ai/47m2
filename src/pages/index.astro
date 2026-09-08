@@ -1,0 +1,97 @@
+---
+import BlogCard from '@/components/blog-card.astro'
+import Link from '@/components/link.astro'
+import { SITE } from '@/consts'
+import Layout from '@/layouts/layout.astro'
+import { getAllNews, getAllPosts } from '@/lib/data-utils'
+import { Icon } from 'astro-icon/components'
+
+// Получаем оба типа контента
+const allPosts = await getAllPosts()
+const allNews = await getAllNews()
+
+// Добавляем метку типа, чтобы различать их в карточках
+const postsWithType = allPosts.map((post) => ({ ...post, type: 'post' }))
+const newsWithType = allNews.map((news) => ({ ...news, type: 'news' }))
+
+// Объединяем и сортируем по дате (новые сверху)
+const allContent = [...postsWithType, ...newsWithType].sort((a, b) => {
+  return new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+})
+
+// Берём первые N штук
+const featuredContent = allContent.slice(0, SITE.featuredPostCount)
+---
+
+<Layout class="max-w-3xl" title="Главная" description="Главная">
+  <section class="rounded-lg border">
+    <div class="flex flex-col space-y-1.5 p-6">
+      <h3 class="text-3xl leading-none font-medium">47m2</h3>
+      <p class="text-muted-foreground text-sm">
+        /Переступил порог конторы — выключил телефон/
+      </p>
+    </div>
+  </section>
+  <section class="flex flex-col gap-y-4">
+    <h2 class="text-2xl font-medium">Что нового ?</h2>
+    <ul class="flex flex-col">
+      {
+        featuredContent.map((item) => (
+          <li>
+            <BlogCard entry={item} />
+          </li>
+        ))
+      }
+    </ul>
+    <div class="read-more-container">
+      <Link href="/blog" class="read-more-link">
+        Все посты
+        <span class="arrow-wrapper">
+          <Icon name="lucide:arrow-right" />
+        </span>
+      </Link>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .read-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem; /* Небольшой отступ сверху, если нужно */
+  }
+
+  .read-more-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    color: var(--foreground);
+    text-decoration: none;
+    background-color: transparent;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: border-color 1.2s ease;
+  }
+
+  .read-more-link:hover {
+    border-color: color-mix(in oklch, var(--white-warm) 40%, transparent);
+    color: var(--white-warm);
+    background-color: color-mix(in oklch, var(--white-warm) 8%, transparent);
+    transition:
+      border-color 1.2s ease,
+      color 1.2s ease,
+      background-color 1.2s ease;
+  }
+
+  .arrow-wrapper {
+    margin-left: 0.375rem;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* .read-more-link:hover .arrow-wrapper {
+    transform: translateX(1px);
+  } */
+</style>

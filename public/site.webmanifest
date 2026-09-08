@@ -1,0 +1,10 @@
+{
+  "name": "Твой Сайт",
+  "short_name": "Сайт",
+  "description": "Описание твоего сайта",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111116",
+  "theme_color": "#111116",
+  "icons": []
+}

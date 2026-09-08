@@ -1,0 +1,62 @@
+---
+import BlogCard from '@/components/blog-card.astro'
+import Breadcrumbs from '@/components/breadcrumbs.astro'
+import PaginationComponent from '@/components/ui/pagination'
+import { SITE } from '@/consts'
+import Layout from '@/layouts/layout.astro'
+import { getAllNews, groupNewsByYear } from '@/lib/data-utils'
+import type { PaginateFunction } from 'astro'
+
+export async function getStaticPaths({
+  paginate,
+}: {
+  paginate: PaginateFunction
+}) {
+  const allNews = await getAllNews()
+  return paginate(allNews, { pageSize: SITE.postsPerPage })
+}
+
+const { page } = Astro.props
+const currentPage = page.currentPage ?? 1
+const newsByYear = groupNewsByYear(page.data)
+const years = Object.keys(newsByYear).sort((a, b) => parseInt(b) - parseInt(a))
+---
+
+<Layout class="max-w-3xl" title="Новости" description="Новости">
+  <Breadcrumbs
+    items={[
+      { label: 'Новости', href: '/news', icon: 'lucide:newspaper' },
+      ...(currentPage > 1
+        ? [{ label: `Страница ${currentPage}`, icon: 'lucide:book-copy' }]
+        : []),
+    ]}
+  />
+
+  <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
+    {
+      years.map((year) => {
+        const newsForYear = newsByYear[year]
+        if (!newsForYear) return null
+        return (
+          <section class="flex flex-col gap-y-4">
+            <div class="font-medium">{year}</div>
+            <ul class="flex flex-col">
+              {newsForYear.map((news) => (
+                <li>
+                  <BlogCard entry={news} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      })
+    }
+  </div>
+
+  <PaginationComponent
+    currentPage={currentPage}
+    totalPages={page.lastPage}
+    baseUrl="/news/"
+    client:load
+  />
+</Layout>

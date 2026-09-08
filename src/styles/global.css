@@ -1,0 +1,52 @@
+@import 'tailwindcss';
+@import '@fontsource/montserrat/400.css'; /* Regular */
+@import '@fontsource/montserrat/500.css'; /* Medium */
+@import '@fontsource/montserrat/600.css'; /* Semibold */
+@import '@fontsource/montserrat/700.css'; /* Bold */
+@import '@/styles/reset.css';
+@import '@/styles/variables.css';
+@import '@/styles/images.css';
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme inline {
+  --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Montserrat', ui-monospace, SFMono-Regular, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+}
+
+* {
+  /* outline: 1px solid red; */
+}
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+*:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 0.25rem; /* Чуть скругляем, чтобы не было острых углов */
+}
+[data-slot='pagination-link']:hover {
+  background: transparent !important;
+  color: inherit !important;
+  cursor: pointer;
+}

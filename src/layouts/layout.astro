@@ -1,0 +1,43 @@
+---
+import '@/styles/global.css'
+import '@/styles/typography.css'
+
+import Footer from '@/components/footer.astro'
+import Head from '@/components/head.astro'
+import Header from '@/components/header.astro'
+import { SITE } from '@/consts'
+import { cn } from '@/lib/utils'
+
+interface Props {
+  class?: string
+  title?: string
+  description?: string
+  image?: string
+}
+
+const { title, description, image } = Astro.props
+const { class: className } = Astro.props
+---
+
+<!doctype html>
+<html
+  class="bg-background text-foreground scheme-light-dark"
+  lang={SITE.locale}
+>
+  <Head title={title ?? ''} description={description} image={image}>
+    <slot name="head" />
+  </Head>
+  <body class="flex h-fit min-h-screen flex-col gap-y-6 font-sans">
+    <Header />
+
+    <main
+      class={cn(
+        'w-full mx-auto flex grow flex-col gap-y-6 px-4 pt-24',
+        className,
+      )}
+    >
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

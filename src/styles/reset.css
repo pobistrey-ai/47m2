@@ -1,0 +1,68 @@
+/* 1. Box-Sizing: Самое важное правило. Padding и border НЕ увеличивают размер элемента */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2. Убираем внешние отступы браузера по умолчанию */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* 3. Плавная прокрутка для всей страницы (красиво для якорных ссылок и кнопки "наверх") */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 4. Базовые настройки для всего текста на сайте */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--background);
+  color: var(--foreground);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased; /* Делает шрифты чуть четче на macOS */
+}
+
+/* 5. Картинки и медиа: чтобы никогда не вылезали за пределы своего контейнера */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* 6. Формы и кнопки: заставляем их наследовать шрифт от body (иначе они выглядят уродливо и мелко) */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* 7. Доступность: красивая оранжевая обводка при навигации с клавиатуры (Tab) */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* 8. Убираем стандартные маркеры списков, если они не нужны (мы зададим свои в .post-body) */
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 9. Ссылки без стандартного подчеркивания по умолчанию (мы добавим его там, где нужно) */
+a {
+  text-decoration: none;
+  color: inherit;
+}

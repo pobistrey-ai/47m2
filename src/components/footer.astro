@@ -1,0 +1,21 @@
+---
+import { Separator } from '@/components/ui/separator'
+import { SOCIAL_LINKS } from '@/consts'
+// import Link from './link.astro'
+import SocialIcons from './social-icons.astro'
+---
+
+<footer class="footer">
+  <div class="flex flex-wrap items-center justify-center gap-x-2 text-center">
+    <span class="text-muted-foreground text-sm">
+      &copy; {new Date().getFullYear()} 47m2.
+    </span>
+    <Separator orientation="vertical" className="hidden h-4! sm:block" />
+  </div>
+  <SocialIcons links={SOCIAL_LINKS} />
+</footer>
+<style>
+  .footer {
+    padding: 2rem 0;
+  }
+</style>

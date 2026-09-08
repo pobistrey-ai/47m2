@@ -1,0 +1,133 @@
+---
+import { Button } from '@/components/ui/button'
+import { Icon } from 'astro-icon/components'
+---
+
+<!-- Убрали весь Tailwind-мусор из className, оставили только наш класс -->
+<Button
+  id="theme-toggle"
+  variant="ghost"
+  size="icon"
+  title="Toggle theme"
+  className="theme-toggle-btn"
+>
+  <Icon name="lucide:sun" class="theme-icon icon-sun" />
+  <Icon name="lucide:moon" class="theme-icon icon-moon" />
+  <span class="sr-only">Toggle theme</span>
+</Button>
+
+<style>
+  /* === 1. ПОЗИЦИОНИРОВАНИЕ И РАЗМЕР КНОПКИ === */
+  .theme-toggle-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    margin: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: 0.375rem;
+    border: 1px solid transparent;
+    background-color: transparent;
+    color: var(--foreground);
+    cursor: pointer;
+    transition: border-color 1.2s ease;
+  }
+
+  .theme-toggle-btn:hover {
+    border-color: color-mix(in oklch, var(--white-warm) 40%, transparent);
+    color: var(--white-warm);
+    background-color: color-mix(in oklch, var(--white-warm) 8%, transparent);
+    transition:
+      border-color 1.2s ease,
+      color 1.2s ease,
+      background-color 1.2s ease;
+  }
+
+  /* === 2. АНИМАЦИЯ ИКОНОК (наша проверенная магия) === */
+  .theme-icon {
+    position: absolute;
+    width: 1rem; /* 16px */
+    height: 1rem;
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
+  }
+
+  /* Светлая тема */
+  .icon-sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+  .icon-moon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+  }
+
+  /* Темная тема */
+  :global([data-theme='dark']) .icon-sun {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+  :global([data-theme='dark']) .icon-moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+</style>
+
+<!-- === ОРИГИНАЛЬНЫЙ JS (БЕЗ ИЗМЕНЕНИЙ) === -->
+<script is:inline data-astro-rerun>
+  ;(() => {
+    const theme = (() => {
+      const stored = localStorage?.getItem('theme') ?? ''
+      if (['dark', 'light'].includes(stored)) return stored
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
+    })()
+
+    document.documentElement.setAttribute('data-theme', theme)
+    window.localStorage.setItem('theme', theme)
+  })()
+</script>
+
+<script>
+  function handleToggleClick() {
+    const element = document.documentElement
+    const currentTheme = element.getAttribute('data-theme')
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
+
+    element.classList.add('[&_*]:transition-none')
+    element.setAttribute('data-theme', newTheme)
+    window.getComputedStyle(element).getPropertyValue('opacity')
+
+    requestAnimationFrame(() => {
+      element.classList.remove('[&_*]:transition-none')
+    })
+
+    localStorage.setItem('theme', newTheme)
+  }
+
+  function initThemeToggle() {
+    document
+      .getElementById('theme-toggle')
+      ?.addEventListener('click', handleToggleClick)
+  }
+
+  initThemeToggle()
+
+  document.addEventListener('astro:after-swap', () => {
+    const storedTheme = localStorage.getItem('theme') || 'light'
+    const element = document.documentElement
+
+    element.classList.add('[&_*]:transition-none')
+    window.getComputedStyle(element).getPropertyValue('opacity')
+    element.setAttribute('data-theme', storedTheme)
+
+    requestAnimationFrame(() => {
+      element.classList.remove('[&_*]:transition-none')
+    })
+
+    initThemeToggle()
+  })
+</script>
