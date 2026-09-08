@@ -4,16 +4,12 @@ import sitemap from '@astrojs/sitemap'
 import icon from 'astro-icon'
 import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import rehypeExternalLinks from 'rehype-external-links'
-import tailwindcss from '@tailwindcss/vite'
+import tailwind from '@astrojs/tailwind' // <-- Правильный импорт
 import mdx from '@astrojs/mdx'
 
 export default defineConfig({
   site: 'https://47m2.ru',
-  integrations: [react(), sitemap(), icon(), mdx()],
-  vite: {
-    // @ts-ignore Игнорируем конфликт типов плагина tailwindcss
-    plugins: [tailwindcss()],
-  },
+  integrations: [react(), sitemap(), icon(), tailwind(), mdx()],
   server: {
     port: 1234,
     host: true,

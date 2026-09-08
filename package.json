@@ -41,6 +41,7 @@
     "typescript": "^5.8.3"
   },
   "devDependencies": {
+    "@astrojs/tailwind": "^6.0.2",
     "prettier": "^3.5.1",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-astro-organize-imports": "^0.4.11",
