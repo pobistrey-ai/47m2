@@ -132,7 +132,7 @@ const tocHeadings = (headings || []).filter(
     title="Наверх"
     aria-label="Наверх"
   >
-    <Icon name="lucide:arrow-up" class="scroll-to-top-icon" />
+    <Icon name="lucide:arrow-up" class="size-8" />
   </Button>
 </Layout>
 
@@ -249,7 +249,6 @@ const tocHeadings = (headings || []).filter(
     margin-bottom: 1rem; /* Добавил небольшой отступ для красоты */
   }
 
-  /* Примечание: .post-image оставлен, предполагаю, что он рендерится внутри <Content /> */
   .post-image {
     width: 100%;
     object-fit: cover;
@@ -371,8 +370,8 @@ const tocHeadings = (headings || []).filter(
 
   .scroll-to-top {
     position: fixed;
-    right: 2rem;
-    bottom: 3.2rem;
+    right: 3rem;
+    bottom: 3rem;
     z-index: 50;
     display: none;
     align-items: center;
@@ -383,12 +382,6 @@ const tocHeadings = (headings || []).filter(
     border: 1px solid;
     border-radius: 50%;
     transition: all 0.3s ease;
-  }
-
-  .scroll-to-top-icon {
-    width: 2rem;
-    height: 2rem;
-    transition: border-color 1.2s ease;
   }
 
   .scroll-to-top:not(.hidden) {

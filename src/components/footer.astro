@@ -1,21 +1,164 @@
 ---
-import { Separator } from '@/components/ui/separator'
-import { SOCIAL_LINKS } from '@/consts'
-// import Link from './link.astro'
-import SocialIcons from './social-icons.astro'
+
 ---
 
 <footer class="footer">
-  <div class="flex flex-wrap items-center justify-center gap-x-2 text-center">
-    <span class="text-muted-foreground text-sm">
-      &copy; {new Date().getFullYear()} 47m2.
-    </span>
-    <Separator orientation="vertical" className="hidden h-4! sm:block" />
+  <div class="footer-social">
+    <a
+      href="https://t.me/fortysevenm2"
+      class="social-link"
+      aria-label="Telegram"
+      title="Telegram"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
+        ></path>
+      </svg>
+    </a>
+
+    <a
+      href="mailto:твоя_почта@example.com"
+      class="social-link"
+      aria-label="Email"
+      title="Email"
+    >
+      <svg
+        class="social-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+      </svg>
+    </a>
   </div>
-  <SocialIcons links={SOCIAL_LINKS} />
+
+  <div class="footer-legal">
+    <span class="footer-text">
+      &copy; {new Date().getFullYear()} 47m2
+    </span>
+    <span class="footer-separator" aria-hidden="true">·</span>
+    <a href="/privacy" class="footer-link">Политика конфиденциальности</a>
+  </div>
 </footer>
+
 <style>
   .footer {
-    padding: 2rem 0;
+    padding: 2.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: auto;
+  }
+
+  /* Социальные иконки */
+  .footer-social {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    color: var(--muted-foreground);
+    background-color: transparent;
+    border: 1px solid var(--border);
+    transition:
+      color 0.3s ease,
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      transform 0.2s ease;
+  }
+
+  .social-link:hover {
+    color: var(--foreground);
+    border-color: var(--white-warm);
+  }
+
+  .social-link:active {
+    scale: 0.9;
+  }
+
+  .social-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  /* Юридическая часть */
+  .footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .footer-text {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+  }
+
+  .footer-separator {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    user-select: none;
+  }
+
+  .footer-link {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+
+  .footer-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--white-warm);
+    transition: width 0.3s ease;
+  }
+
+  .footer-link:hover {
+    color: var(--foreground);
+  }
+
+  .footer-link:hover::after {
+    width: 100%;
+  }
+
+  /* Мобильная адаптация */
+  @media (max-width: 640px) {
+    .footer {
+      padding: 2rem 1rem;
+      gap: 1.25rem;
+    }
+
+    .social-link {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+
+    .social-icon {
+      width: 1.125rem;
+      height: 1.125rem;
+    }
   }
 </style>

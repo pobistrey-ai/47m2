@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap'
 import icon from 'astro-icon'
 import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import rehypeExternalLinks from 'rehype-external-links'
-import tailwind from '@astrojs/tailwind' // <-- Правильный импорт
+import tailwind from '@astrojs/tailwind'
 import mdx from '@astrojs/mdx'
 
 export default defineConfig({

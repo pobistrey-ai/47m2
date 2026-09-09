@@ -24,7 +24,7 @@ const { class: className } = Astro.props
   class="bg-background text-foreground scheme-light-dark"
   lang={SITE.locale}
 >
-  <Head title={title ?? ''} description={description} image={image}>
+  <Head title={title ?? ''} description={description ?? ''} image={image ?? ''}>
     <slot name="head" />
   </Head>
   <body class="flex h-fit min-h-screen flex-col gap-y-6 font-sans">
