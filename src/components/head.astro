@@ -15,7 +15,7 @@ const { title, description, image } = Astro.props
 const pageUrl = Astro.url.href
 const ogImage = image
   ? new URL(image, Astro.site).href
-  : new URL('/og-image.png', Astro.site).href
+  : new URL('/og-image-v2.png', Astro.site).href
 
 const pageDescription = description || SITE.description || SITE.title
 const pageTitle = title ? `${title} | ${SITE.title}` : SITE.title
