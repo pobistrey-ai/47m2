@@ -25,10 +25,18 @@ const featuredContent = allContent.slice(0, SITE.featuredPostCount)
 
 <Layout class="max-w-3xl" title="Главная" description="Главная">
   <section class="rounded-lg border">
-    <div class="flex flex-col space-y-1.5 p-6">
+    <blockquote class="flex flex-col space-y-1.5 p-6">
       <h3 class="text-3xl font-medium leading-none">47m2</h3>
-      <p class="text-muted-foreground text-sm">/.../</p>
-    </div>
+      <p class="text-muted-foreground text-sm italic">
+        – Ну что же, – задумчиво отозвался тот, – они – люди как люди. Любят
+        деньги, но ведь это всегда было… Человечество любит деньги, из чего бы
+        те ни были сделаны, из кожи ли, из бумаги ли, из бронзы или из золота.
+        Ну, легкомысленны… ну, что ж… и милосердие иногда стучится в их сердца…
+        обыкновенные люди… в общем, напоминают прежних… квартирный вопрос только
+        испортил их…
+      </p>
+      <cite>М.Б.</cite>
+    </blockquote>
   </section>
   <section class="flex flex-col gap-y-4">
     <h2 class="text-2xl font-medium">Что нового ?</h2>
@@ -87,5 +95,9 @@ const featuredContent = allContent.slice(0, SITE.featuredPostCount)
     display: flex;
     align-items: center;
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  cite {
+    margin-left: auto;
   }
 </style>
