@@ -15,6 +15,6 @@
     <!-- Заголовок: базовая линия Y=295 (визуальный центр ~315) -->
     <text x="615" y="310" font-family="Arial, sans-serif" font-size="84" font-weight="bold" fill="#1a1a1a" letter-spacing="-1">47m2</text>
     <!-- Подзаголовок: базовая линия Y=345 (визуальный центр ~315) -->
-    <text x="615" y="365" font-family="Arial, sans-serif" font-size="36" fill="#666666" letter-spacing="0.5">Блог о недвижимости и жизни</text>
+    <text x="615" y="365" font-family="Arial, sans-serif" font-size="36" fill="#666666" letter-spacing="0.5">И снова квартирный вопрос</text>
   </g>
 </svg>
