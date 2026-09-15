@@ -213,3 +213,19 @@
     margin-top: 0.5rem;
   }
 }
+
+.mempic-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.mempic-wrapper img {
+  width: 400px;
+  height: 300px;
+  max-width: 100%;
+  object-fit: contain;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}

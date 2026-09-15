@@ -26,7 +26,7 @@ const news = defineCollection({
       title: z.string(),
       description: z.string(),
       date: z.coerce.date(),
-      image: image().optional(), // <-- ДОБАВЛЕНО
+      image: image().optional(),
     }),
 })
 
